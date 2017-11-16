@@ -71,7 +71,7 @@ def generateLB():
     interface2 = copy.deepcopy(interface1)
     interface2.find('source').set("bridge", "LAN2") 
 
-    # Se añade. Ojo porque queda al final. Revisar!
+    # Se anade. Ojo porque queda al final. Revisar
     plantilla.find('devices').append(interface2)
 
     # Exportamos a un nuevo archivo 
