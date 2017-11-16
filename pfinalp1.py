@@ -64,19 +64,14 @@ def generateLB():
     vmName.text = "lb"
 
     # Anade la VM a la subred correspondiente
-    sourceBridge = plantilla.find('devices/interface')
-        
-    interface1 = sourceBridge
-    interface2 = copy.deepcopy(sourceBridge)
-
-
+    interface1 = plantilla.find('devices/interface')
     interface1.find('source').set("bridge", "LAN1") 
+
+    # Como hay 2 interfaces distintos, se duplica el elemento
+    interface2 = copy.deepcopy(interface1)
     interface2.find('source').set("bridge", "LAN2") 
 
-
-
-    
-    plantilla.find('devices').append(interface1)
+    # Se añade. Ojo porque queda al final. Revisar!
     plantilla.find('devices').append(interface2)
 
     # Exportamos a un nuevo archivo 
