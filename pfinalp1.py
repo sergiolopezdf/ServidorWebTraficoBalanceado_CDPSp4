@@ -7,21 +7,22 @@ import copy
 
 #Funcion que automatiza la creacion de ficheros .qcow2 y XML
 def crear(nServers):
-   	# Se copia el archivo
-    #subprocess.call("sudo cp plantilla-vm-p3.xml prueba1.xml", shell=True)
-    #subprocess.call("sudo chmod 777 prueba1.xml", shell=True)
-   	# Falta copiar VM
-
     # Creamos los clientes
     generateNewVM("c1", "LAN1")
+    subprocess.call("sudo virsh define c1.xml", shell=True)
 
     # Creamos los servidores. Habra que modificarlo para admitirlo como parametro
-
     for server in range(1, nServers + 1):
         generateNewVM("s"+str(server) , "LAN2")
+        subprocess.call("sudo virsh define s"+str(server)+".xml", shell=True)
    
     # Creamos LB
     generateLB()
+    subprocess.call("sudo virsh define lb.xml", shell=True)
+
+    # Lanza virt-manager
+    subprocess.call("sudo virt-manager", shell=True)
+
 
 def generateNewVM(name, LAN):
     # Abre el archivo XML copiado
