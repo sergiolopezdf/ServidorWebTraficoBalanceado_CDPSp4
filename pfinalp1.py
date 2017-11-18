@@ -42,8 +42,6 @@ def generateNewVM(name, LAN):
     # Exportamos a un nuevo archivo 
     plantilla.write(open(''+name+'.xml', 'w'), encoding='UTF-8')
 
-    
-
     # Copiamos la imagen de la VM correspondiente
     subprocess.call("sudo cp cdps-vm-base-p3.qcow2 "+name+".qcow2", shell=True)
 
@@ -77,11 +75,13 @@ def generateLB():
     # Exportamos a un nuevo archivo 
     plantilla.write(open('lb.xml', 'w'), encoding='UTF-8')
 
+    # Copiamos la imagen de la VM correspondiente
+    subprocess.call("sudo cp cdps-vm-base-p3.qcow2 lb.qcow2", shell=True)
+
     # Damos permiso de escritura
     subprocess.call("sudo chmod 777 lb.xml", shell=True)
+    subprocess.call("sudo chmod 777 lb.qcow2", shell=True)
 
-    # Copiamos la imagen de la VM correspondiente
-    # subprocess.call("sudo cp cdps-vm-base-p3.qcow2 "+name+".xml", shell=True)
 
 #Arranca las VMs y mostrar las consolas correspondientes
 def arrancar():
@@ -94,7 +94,6 @@ def parar():
 #Libera el escenario y borra todos los ficheros generados
 def destruir():
     return
-
 
 # Flujo principal de ejecucion del programa
 if len(sys.argv) < 2:
@@ -121,4 +120,4 @@ elif orden == "parar":
 elif orden == "destruir":
     destruir()
 else:
-    sys.stderr.write("Introduce una orden valida")
+    sys.stderr.write("Introduce una orden valida\n")
