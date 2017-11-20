@@ -7,6 +7,12 @@ import os
 
 #Funcion que automatiza la creacion de ficheros .qcow2 y XML
 def crear(nServers):
+    # Creamos los interfaces de red
+    subprocess.call("sudo brctl addbr LAN1", shell=True)
+    subprocess.call("sudo brctl addbr LAN2", shell=True)
+    subprocess.call("sudo ifconfig LAN1 up", shell=True)
+    subprocess.call("sudo ifconfig LAN2 up", shell=True)
+
     # Creamos los clientes
     generateNewVM("c1", "LAN1")
     subprocess.call("sudo virsh define c1.xml", shell=True)
