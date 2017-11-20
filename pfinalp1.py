@@ -3,7 +3,7 @@ import subprocess
 import sys
 from lxml import etree
 import copy
-
+import os
 
 #Funcion que automatiza la creacion de ficheros .qcow2 y XML
 def crear(nServers):
@@ -11,7 +11,7 @@ def crear(nServers):
     generateNewVM("c1", "LAN1")
     subprocess.call("sudo virsh define c1.xml", shell=True)
 
-    # Creamos los servidores. Habra que modificarlo para admitirlo como parametro
+    # Creamos los servidores
     for server in range(1, nServers + 1):
         generateNewVM("s"+str(server) , "LAN2")
         subprocess.call("sudo virsh define s"+str(server)+".xml", shell=True)
@@ -30,7 +30,8 @@ def generateNewVM(name, LAN):
 
     # Selecciona la imagen a usar
     sourceFile = plantilla.find('devices/disk/source')
-    sourceFile.set("file", ""+name+".qcow2")
+    currentPath = os.getcwd()
+    sourceFile.set("file", ""+currentPath+"/"+name+".qcow2")
 
     # Cambia el nombre de la VM
     vmName = plantilla.find('name')
@@ -44,7 +45,7 @@ def generateNewVM(name, LAN):
     plantilla.write(open(''+name+'.xml', 'w'), encoding='UTF-8')
 
     # Copiamos la imagen de la VM correspondiente
-    subprocess.call("sudo cp cdps-vm-base-p3.qcow2 "+name+".qcow2", shell=True)
+    subprocess.call("sudo qemu-img create -f qcow2 -b cdps-vm-base-p3.qcow2 "+name+".qcow2", shell=True)
 
     # Damos permiso de escritura
     subprocess.call("sudo chmod 777 "+name+".xml", shell=True)
@@ -56,7 +57,8 @@ def generateLB():
 
     # Selecciona la imagen a usar
     sourceFile = plantilla.find('devices/disk/source')
-    sourceFile.set("file", "lb.qcow2")
+    currentPath = os.getcwd()
+    sourceFile.set("file", ""+currentPath+"/lb.qcow2")
 
     # Cambia el nombre de la VM
     vmName = plantilla.find('name')
@@ -77,7 +79,7 @@ def generateLB():
     plantilla.write(open('lb.xml', 'w'), encoding='UTF-8')
 
     # Copiamos la imagen de la VM correspondiente
-    subprocess.call("sudo cp cdps-vm-base-p3.qcow2 lb.qcow2", shell=True)
+    subprocess.call("sudo qemu-img create -f qcow2 -b cdps-vm-base-p3.qcow2 lb.qcow2", shell=True)
 
     # Damos permiso de escritura
     subprocess.call("sudo chmod 777 lb.xml", shell=True)
@@ -109,7 +111,12 @@ nServers = 2
 
 # Comprobamos si se ha especificado el numero de servidores
 if len(sys.argv) == 3:
-    nServers = int(sys.argv[2])
+    if sys.argv[2] > 5:
+        nServers = 5
+    elif sys.argv[2] == 0:
+        nServers = 2
+    else:  
+        nServers = int(sys.argv[2])
 
 # Ejecutamos la orden
 if orden == "crear":
