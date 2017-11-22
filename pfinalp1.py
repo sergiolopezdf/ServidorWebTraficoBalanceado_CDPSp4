@@ -117,9 +117,9 @@ nServers = 2
 
 # Comprobamos si se ha especificado el numero de servidores
 if len(sys.argv) == 3:
-    if sys.argv[2] > 5:
+    if int(sys.argv[2]) > 5:
         nServers = 5
-    elif sys.argv[2] == 0:
+    elif int(sys.argv[2]) == 0:
         nServers = 2
     else:  
         nServers = int(sys.argv[2])
